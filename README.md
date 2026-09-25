@@ -1,20 +1,20 @@
 # SYRAA Trust Engine V2
 
-SYRAA Trust Engine V2 is a production-grade Generative AI verification platform that answers questions from uploaded documents using RAG and verifies every AI response with trust scoring, hallucination risk detection, answer-source overlap, source chunks, and claim-by-claim verification.
+SYRAA Trust Engine V2 is a Generative AI verification platform that answers questions from uploaded documents using RAG and verifies AI responses through trust scoring, hallucination risk detection, answer-source overlap, source evidence, and claim-by-claim verification.
 
 ## Core Idea
 
-Most RAG apps only give an AI answer.
+Most RAG applications stop after generating an AI answer.
 
-SYRAA does more:
+SYRAA adds a verification layer that:
 
 - Generates document-grounded answers
-- Retrieves source chunks
-- Calculates trust score
+- Retrieves relevant source chunks
+- Calculates a Trust Score
 - Detects hallucination risk
 - Measures answer-source overlap
-- Shows citation quality
-- Verifies every AI-generated claim
+- Evaluates citation quality
+- Verifies individual AI-generated claims
 - Exports downloadable trust reports
 
 ## Tech Stack
@@ -35,8 +35,8 @@ SYRAA does more:
 
 ### AI / RAG
 
-- Embedding model: `all-MiniLM-L6-v2`
-- LLM model: `llama-3.3-70b-versatile`
+- Embedding Model: `all-MiniLM-L6-v2`
+- LLM Model: `openai/gpt-oss-120b`
 - Semantic retrieval
 - Top-k source chunk retrieval
 - Trust Engine V2 scoring logic
@@ -57,7 +57,7 @@ SYRAA does more:
 - Matched Keywords
 - Source Chunks
 - Copy Answer
-- Download Trust Report
+- Downloadable Trust Report
 - Animated system workflow
 - Analytics dashboard
 
@@ -65,82 +65,86 @@ SYRAA does more:
 
 ```text
 User uploads PDF
-↓
-FastAPI backend extracts text
-↓
+        ↓
+FastAPI extracts document text
+        ↓
 Text is split into chunks
-↓
+        ↓
 Embeddings are generated
-↓
+        ↓
 User asks a question
-↓
-Semantic retrieval finds top-k chunks
-↓
-LLM generates answer from retrieved context
-↓
+        ↓
+Semantic retrieval finds relevant chunks
+        ↓
+LLM generates an answer from retrieved context
+        ↓
 Trust Engine V2 verifies the answer
-↓
-Frontend displays answer, sources, trust score, and claim heatmap
+        ↓
+Frontend displays the answer, sources,
+trust metrics and claim verification heatmap
+```
 
-Trust Engine V2
+## Trust Engine V2
 
-SYRAA verifies the AI response using:
+SYRAA verifies AI-generated responses using:
 
-Trust Score
-Citation Quality
-Hallucination Risk
-Answer-Source Overlap
-Verification Status
-Confidence Explanation
-Claim-by-Claim Verification Heatmap
+- Trust Score
+- Citation Quality
+- Hallucination Risk
+- Answer-Source Overlap
+- Verification Status
+- Confidence Explanation
+- Claim-by-Claim Verification Heatmap
 
-Claim-by-Claim Verification
+## Claim-by-Claim Verification
 
-SYRAA breaks the AI answer into individual claims and checks whether each claim is supported by retrieved source evidence.
+SYRAA breaks an AI-generated answer into individual claims and checks whether each claim is supported by retrieved source evidence.
 
-Each claim is marked as:
+Each claim is classified as:
 
-Verified
-Partial
-Unsupported
+- 🟢 Verified
+- 🟡 Partial
+- 🔴 Unsupported
 
-This helps reduce hallucination risk and makes the AI output explainable.
+This adds an explainability layer to the RAG pipeline and helps surface potentially unsupported AI-generated statements.
 
-API Endpoints
-Health Check
-GET /health
-Analytics
-GET /analytics
-Upload Document
-POST /documents/upload
-RAG Search
-POST /rag/search
-RAG Answer
-POST /rag/answer
-Example Use Case
+## API Endpoints
 
-User uploads a resume PDF and asks:
+| Purpose | Method | Endpoint |
+|---|---|---|
+| Health Check | GET | `/health` |
+| Analytics | GET | `/analytics` |
+| Upload Document | POST | `/documents/upload` |
+| RAG Search | POST | `/rag/search` |
+| RAG Answer | POST | `/rag/answer` |
 
-What skills does this person have?
+## Example Use Case
+
+A user uploads a resume PDF and asks:
+
+> What skills does this person have?
 
 SYRAA returns:
 
-AI-generated answer
-Trust Score
-Citation Quality
-Hallucination Risk
-Verification Status
-Matched Keywords
-Source Chunks
-Claim-by-Claim Heatmap
-Downloadable Trust Report
-Project Structure
+- AI-generated answer
+- Trust Score
+- Citation Quality
+- Hallucination Risk
+- Verification Status
+- Matched Keywords
+- Relevant Source Chunks
+- Claim-by-Claim Verification Heatmap
+- Downloadable Trust Report
+
+## Project Structure
+
+```text
 syraa-trust-engine/
 │
 ├── backend/
 │   ├── app/
 │   │   └── main.py
-│   ├── venv/
+│   ├── requirements.txt
 │   └── .env
 │
 ├── frontend/
@@ -151,86 +155,157 @@ syraa-trust-engine/
 │   │       └── AnimatedWorkflow.tsx
 │   └── package.json
 │
+├── syraa-backend/
+│   └── main.py
+│
+├── .gitignore
 └── README.md
-Backend Setup
+```
 
-Go to backend folder:
+## Backend Setup
 
+### 1. Open the backend directory
+
+```bash
 cd backend
+```
 
-Create virtual environment:
+### 2. Create a virtual environment
 
+```bash
 python -m venv venv
+```
 
-Activate virtual environment:
+### 3. Activate the virtual environment
 
+Windows:
+
+```powershell
 .\venv\Scripts\activate
+```
 
-Install dependencies:
+### 4. Install dependencies
 
+```bash
 pip install fastapi uvicorn python-dotenv pydantic python-multipart pypdf sentence-transformers requests numpy
+```
 
-Create .env file:
+### 5. Create the backend environment file
 
+Create:
+
+```text
+backend/.env
+```
+
+Add:
+
+```env
 GROQ_API_KEY=your_groq_api_key_here
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-120b
+```
 
-Run backend:
+> Never commit your real API key to GitHub.
 
+### 6. Start the backend
+
+```bash
 python -m uvicorn app.main:app --reload
+```
 
-Backend runs at:
+Backend:
 
+```text
 http://127.0.0.1:8000
+```
 
-Swagger docs:
+Swagger API documentation:
 
+```text
 http://127.0.0.1:8000/docs
-Frontend Setup
+```
 
-Go to frontend folder:
+## Frontend Setup
 
+### 1. Open the frontend directory
+
+```bash
 cd frontend
+```
 
-Install dependencies:
+### 2. Install dependencies
 
+```bash
 npm install
+```
 
-Run frontend:
+### 3. Configure the backend URL
 
+Create:
+
+```text
+frontend/.env.local
+```
+
+For the deployed backend:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=https://parthishyogi14kr-syraa-backend.hf.space
+```
+
+For local backend development:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+```
+
+### 4. Start the frontend
+
+```bash
 npm run dev
+```
 
-Frontend runs at:
+Frontend:
 
+```text
 http://localhost:3000
- Demo Flow
-1. Open SYRAA dashboard
-2. View animated workflow
-3. Upload a real PDF
-4. Ask a question
-5. View AI answer
-6. Check Trust Score cards
-7. View Claim-by-Claim Verification Heatmap
-8. Review source chunks
-9. Copy answer
-10. Download trust report
+```
 
-What Makes This Project Unique
+## Demo Flow
 
-Most Gen AI projects stop at RAG answer generation.
+1. Open the SYRAA dashboard
+2. View the system workflow
+3. Upload a PDF document
+4. Ask a document-related question
+5. View the generated RAG answer
+6. Review Trust Score metrics
+7. Inspect Claim-by-Claim Verification
+8. Review retrieved source chunks
+9. Copy the generated answer
+10. Download the Trust Report
 
-SYRAA adds a trust verification layer:
+## What Makes SYRAA Different
 
+A standard RAG pipeline typically ends after answer generation.
+
+SYRAA adds an additional verification layer:
+
+```text
 RAG Answer
-+
+    +
 Trust Score
-+
+    +
+Citation Quality
+    +
 Hallucination Risk
-+
+    +
 Answer-Source Overlap
-+
+    +
 Claim-Level Verification
-+
+    +
+Source Evidence
+    +
 Exportable Trust Report
+```
 
-This makes it closer to a real enterprise AI reliability system.
+The goal is to make document-based Generative AI outputs more transparent, inspectable, and evidence-aware.

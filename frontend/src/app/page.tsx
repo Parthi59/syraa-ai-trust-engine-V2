@@ -48,7 +48,8 @@ type RagAnswer = {
   }[];
 };
 
-const API_BASE_URL = "https://parthishyogi14kr-syraa-backend.hf.space";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
 export default function Home() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
@@ -485,14 +486,14 @@ ${ragAnswer.trust_report.verification_status}
                 ))}
               </Panel>
 
-              <Panel title="Next Build">
+              <Panel title="SYRAA Trust Core">
                 <ul className="space-y-3 text-gray-300">
-                  <li>✅ Upload real PDF</li>
-                  <li>✅ Generate trusted RAG answer</li>
-                  <li>✅ Show trust score dashboard</li>
-                  <li>✅ Add document upload UI</li>
-                  <li>✅ Add ask AI interface</li>
-                  <li>⏳ Add persistent database storage</li>
+                  <li>✅ Evidence Grounding</li>
+                  <li>✅ Claim Verification</li>
+                  <li>✅ Trust Scoring</li>
+                  <li>✅ Hallucination Detection</li>
+                  <li>✅ Source Transparency</li>
+                  <li>✅ Explainable AI Output</li>
                 </ul>
               </Panel>
             </div>
